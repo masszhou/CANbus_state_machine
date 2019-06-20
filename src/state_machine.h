@@ -1,7 +1,14 @@
+/**
+    state machine engine
+    Purpose: handel exceptions between ROS and CAN Bus communication
+	Ref: state machine template was originally learned from David Lafreniere's post
+
+    @author Zhiliang Zhou
+    @version 1.0 25/09/2018
+*/
+
 #ifndef STATE_MACHINE_H
 #define STATE_MACHINE_H
-
-// author: Zhiliang Zhou
 
 #include <stdint.h>
 #include <cassert>
