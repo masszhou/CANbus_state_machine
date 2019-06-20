@@ -64,7 +64,7 @@ public:
 
     // listen to ROS topics, not quite sure if it is proper to add these functions in this class, reconsider about it later.
     // std::shared_ptr<can::ThreadedSocketCANInterface> m_driver_ptr;
-    // void sendToCAN();
+    void sendToCAN();
 
     //debug
     int m_driver_seatbelt;

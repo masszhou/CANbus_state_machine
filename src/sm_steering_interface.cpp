@@ -26,6 +26,11 @@ SteeringInterface::SteeringInterface() :
     isDebugMode = false;
 }
 
+void SteeringInterface::sendToCAN(){
+    // dummy code, send msg
+    m_msg_sent = true;
+}
+
 // action function
 // transition invoked by external event
 void SteeringInterface::setValue(SteeringInterfaceDataPtr data){
@@ -65,7 +70,7 @@ void SteeringInterface::sendClearance(){
 
 void SteeringInterface::activate(){ 
     static const uint8_t TRANSITIONS[] = {
-        EVENT_IGNORED,          //state Idle
+        EVENT_IGNORED,         //state Idle
         ST_ACTIVATION,         //state Clearance
         EVENT_IGNORED,         //state Activation
         EVENT_IGNORED,         //state Working
@@ -85,9 +90,9 @@ void SteeringInterface::ST_clearance(const NoEventDataPtr data){
     if (isActivationRequirementsOK() == true && hasStopConditions() == false){
         // dummy code, keep counter, CRC, clear data
         if (m_control_mode == CT_ANGLE){
-            // dummy code, use angle control
+            // dummy code, prepare clearance signal, use angle control
         }else{
-            // dummy code, use torque control
+            // dummy code, prepare clearance signal, use torque control
         }
         // can frame is ready to send
         // invokeInternalEvent(ST_ACTIVATION);
@@ -106,18 +111,16 @@ void SteeringInterface::ST_activation(const NoEventDataPtr data){
         // dummy code, keep counter, CRC, clear data
         // keep clearance ?
         if (m_control_mode == CT_ANGLE){
-            // dummy code, use angle control
+            // dummy code, maintain clearance signal, use angle control
         }else{
-            // dummy code, use torque control
+            // dummy code, maintain clearance signal, use torque control
         }
-        // dummy code, send once to activate, no need to keep
-        // can frame is ready to send
-        // invokeInternalEvent(ST_WORKING);
+        // dummy code, send once activate request, no need to keep
     }else{
         if (isActivationRequirementsOK() == false)
-            cout << "[debug] in standby state, standby requirement FAILED" << endl;
+            cout << "[debug] in activation state, standby requirement FAILED" << endl;
         if (hasStopConditions() == true)
-            cout << "[debug] in standby state, stop received" << endl;
+            cout << "[debug] in activation state, stop received" << endl;
         // go to stop, because requirements not fullfilled
         invokeInternalEvent(ST_STOP);
     }
@@ -129,12 +132,12 @@ void SteeringInterface::ST_working(const SteeringInterfaceDataPtr pdata){
     }
     if (isWorkingReqOK() == true && hasStopConditions() == false){
         if (m_gateway_SIState == 2){
-            // dummy code, send angle request
-            // dummy code, keep clearance for angle control
+            // dummy code, prepare angle request
+            // dummy code, maintain clearance for angle control
             // can frame is ready to send
         }else if(m_gateway_SIState == 3){
-            // dummy code, send angle request
-            // dummy code, keep clearance for torque control
+            // dummy code, prepare angle request
+            // dummy code, maintain clearance for torque control
             // can frame is ready to send
         }else{
             cout << "error, logic condition leak" << endl;
@@ -146,7 +149,7 @@ void SteeringInterface::ST_working(const SteeringInterfaceDataPtr pdata){
         if (hasStopConditions() == true)
             cout << "[debug] in working state, stop received" << endl;
         // go to stop, because requirements not fullfilled
-        // invokeInternalEvent(ST_STOP);
+        invokeInternalEvent(ST_STOP);
     }
 }
 
